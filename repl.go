@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/masintxi/go_pokedex/internal/pokeapi"
 )
 
-func startRepl() {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
-	cfg := &Config{}
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -37,15 +38,16 @@ func cleanInput(text string) []string {
 	return words
 }
 
-type Config struct {
-	Next     *string
-	Previous *string
+type config struct {
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
 }
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*config) error
 }
 
 func getcommands() map[string]cliCommand {

@@ -8,7 +8,7 @@ import (
 
 const locURL = "https://pokeapi.co/api/v2/location-area/"
 
-func commandMap(cfg *Config) error {
+func commandMap(cfg *config) error {
 	url := locURL
 	if cfg.Next != nil {
 		url = *cfg.Next
@@ -23,7 +23,7 @@ func commandMap(cfg *Config) error {
 	return nil
 }
 
-func commandMapb(cfg *Config) error {
+func commandMapb(cfg *config) error {
 	if cfg.Previous == nil {
 		fmt.Println("You are at the first page.")
 		return nil
@@ -34,10 +34,10 @@ func commandMapb(cfg *Config) error {
 	return nil
 }
 
-func printGetResults(cfg *Config, url string) error {
+func printGetResults(cfg *config, url string) error {
 	var data pokeapi.PokeMap
 
-	data, err := pokeapi.GetLocations(url)
+	data, err := cfg.pokeapiClient.GetLocations(url)
 	if err != nil {
 		return err
 	}
