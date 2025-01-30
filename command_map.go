@@ -1,25 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
+
+	"github.com/masintxi/go_pokedex/internal/pokeapi"
 )
 
-type pokeMap struct {
-	Count    int     `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
+const locURL = "https://pokeapi.co/api/v2/location-area/"
 
 func commandMap(cfg *Config) error {
-	url := "https://pokeapi.co/api/v2/location-area/"
-	if cfg.next != nil {
-		url = *cfg.next
+	url := locURL
+	if cfg.Next != nil {
+		url = *cfg.Next
 	}
 
 	if url == "" {
@@ -27,32 +19,39 @@ func commandMap(cfg *Config) error {
 		return nil
 	}
 
-	res, err := http.Get(url)
+	printGetResults(cfg, url)
+	return nil
+}
+
+func commandMapb(cfg *Config) error {
+	if cfg.Previous == nil {
+		fmt.Println("You are at the first page.")
+		return nil
+	}
+	url := *cfg.Previous
+
+	printGetResults(cfg, url)
+	return nil
+}
+
+func printGetResults(cfg *Config, url string) error {
+	var data pokeapi.PokeMap
+
+	data, err := pokeapi.GetLocations(url)
 	if err != nil {
-		fmt.Printf("Error getting the url: %s\n", err)
-		return fmt.Errorf("error getting the url: %s", err)
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode > 299 {
-		fmt.Printf("Error: %s\n", res.Status)
-		return fmt.Errorf("error: %s", res.Status)
+		return err
 	}
 
-	var data pokeMap
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&data)
-	if err != nil {
-		fmt.Printf("Error decoding the response: %s\n", err)
-		return fmt.Errorf("error decoding the response: %s", err)
+	cfg.Next = data.Next
+	cfg.Previous = data.Previous
+
+	if len(data.Results) == 0 {
+		fmt.Println("No location areas to display")
+	} else {
+		for _, result := range data.Results {
+			fmt.Println(result.Name)
+		}
 	}
-
-	cfg.next = data.Next
-	cfg.previous = data.Previous
-
-	for _, result := range data.Results {
-		fmt.Println(result.Name)
-	}
-
+	fmt.Println()
 	return nil
 }

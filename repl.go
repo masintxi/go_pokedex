@@ -38,8 +38,8 @@ func cleanInput(text string) []string {
 }
 
 type Config struct {
-	next     *string
-	previous *string
+	Next     *string
+	Previous *string
 }
 
 type cliCommand struct {
