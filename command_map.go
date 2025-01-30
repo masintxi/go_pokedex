@@ -6,10 +6,8 @@ import (
 	"github.com/masintxi/go_pokedex/internal/pokeapi"
 )
 
-const locURL = "https://pokeapi.co/api/v2/location-area/"
-
-func commandMap(cfg *config) error {
-	url := locURL
+func commandMap(cfg *config, args ...string) error {
+	url := pokeapi.LocURL
 	if cfg.Next != nil {
 		url = *cfg.Next
 	}
@@ -23,7 +21,7 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	if cfg.Previous == nil {
 		fmt.Println("You are at the first page.")
 		return nil
