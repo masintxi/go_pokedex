@@ -25,6 +25,15 @@ func (client *Client) GetLocations(url string) (PokeMap, error) {
 	return data, nil
 }
 
+func (client *Client) CatchPokemon(url string) (PokeInfo, error) {
+	var data PokeInfo
+	err := client.GetResource(url, &data)
+	if err != nil {
+		return PokeInfo{}, err
+	}
+	return data, nil
+}
+
 func (client *Client) GetResource(url string, target interface{}) error {
 	if val, ok := client.cache.Get(url); ok {
 		err := json.Unmarshal(val, target)
@@ -50,7 +59,7 @@ func (client *Client) GetResource(url string, target interface{}) error {
 	defer res.Body.Close()
 
 	if res.StatusCode > 299 {
-		return fmt.Errorf("error: %s", res.Status)
+		return fmt.Errorf("%v", res.StatusCode)
 	}
 
 	rData, err := io.ReadAll(res.Body)
