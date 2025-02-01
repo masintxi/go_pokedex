@@ -1,21 +1,31 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/chzyer/readline"
 	"github.com/masintxi/go_pokedex/internal/pokeapi"
 )
 
 func startRepl(cfg *config) {
-	scanner := bufio.NewScanner(os.Stdin)
+	prompt := colorBlue + "Pokedex > " + colorReset
+	rl, err := readline.New(prompt)
+	if err != nil {
+		panic(err)
+	}
+	defer rl.Close()
 
 	for {
-		fmt.Print("Pokedex > ")
-		scanner.Scan()
-		words := cleanInput(scanner.Text())
+		line, err := rl.Readline()
+		if err != nil { // Ctrl+C or Ctrl+D
+			if err == readline.ErrInterrupt {
+				continue
+			}
+			break
+		}
+
+		words := cleanInput(line)
 		if len(words) == 0 {
 			continue
 		}
@@ -25,15 +35,16 @@ func startRepl(cfg *config) {
 			fmt.Println("Invalid command. Please try again.")
 			continue
 		}
+
 		args := []string{}
 		if len(words) > 1 {
 			args = words[1:]
 		}
-		err := command.callback(cfg, args...)
+
+		err = command.callback(cfg, args...)
 		if err != nil {
 			fmt.Printf("Error: %s\n", err)
 		}
-
 	}
 }
 

@@ -12,7 +12,7 @@ func commandCatch(cfg *config, args ...string) error {
 		return fmt.Errorf("please provide a pokemon name")
 	}
 	pokemon := args[0]
-	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon)
+	fmt.Printf(fmtAction("Throwing a Pokeball at %s...\n"), pokemon)
 
 	url := pokeapi.PokeURL + pokemon
 
@@ -27,9 +27,9 @@ func commandCatch(cfg *config, args ...string) error {
 	baseExp := data.BaseExperience
 	randNum := rand.Intn(baseExp)
 	if baseExp-randNum > baseExp/3 {
-		fmt.Printf("%s escaped! (%v vs %v)\n", pokemon, randNum, baseExp)
+		fmt.Printf(fmtFail("%s escaped! (%v vs %v)\n"), pokemon, randNum, baseExp)
 	} else {
-		fmt.Printf("You caught a %s! (%v vs %v)\n", pokemon, randNum, baseExp)
+		fmt.Printf(fmtSuccess("You caught a %s! (%v vs %v)\n"), pokemon, randNum, baseExp)
 		fmt.Println("You may now inspect it with the inspect command.")
 		cfg.pokemonCaught[pokemon] = data
 	}

@@ -17,12 +17,12 @@ func commandExplore(cfg *config, args ...string) error {
 		return err
 	}
 
-	fmt.Printf("Exploring %s...\n", data.Location.Name)
-	fmt.Println("Found Pokemon:")
+	fmt.Printf(fmtAction("Exploring %s...\n"), data.Location.Name)
+	fmt.Println(fmtSuccess("Found Pokemon:"))
+	useColor := true
 	for _, result := range data.PokemonEncounters {
-		fmt.Println(" -", result.Pokemon.Name)
+		fmt.Println(alternateColor(" - "+result.Pokemon.Name, useColor))
+		useColor = !useColor
 	}
-
 	return nil
-
 }

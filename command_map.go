@@ -46,8 +46,10 @@ func printGetResults(cfg *config, url string) error {
 	if len(data.Results) == 0 {
 		fmt.Println("No location areas to display")
 	} else {
+		useColor := true
 		for _, result := range data.Results {
-			fmt.Println(result.Name)
+			fmt.Println(alternateColor(result.Name, useColor))
+			useColor = !useColor
 		}
 	}
 	fmt.Println()

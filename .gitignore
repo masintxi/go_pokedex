@@ -13,6 +13,14 @@
 # Ignore test binaries
 *.test
 
+# Ignore binary files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
 # Ignore coverage reports
 *.out
 
@@ -20,11 +28,15 @@
 go.work
 go.work.sum
 
+# Coverage files
+*.out
+
 # Ignore environment files
 .env
 
 # Allow LICENSE explicitly
 !LICENSE
 
-# Misc
-/.vscode
+# IDE specific files
+.idea/
+.vscode/
